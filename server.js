@@ -1,5 +1,5 @@
 const express=require("express")
-const { ValidationError } = require("joi")
+const {ValidationError} = require("joi");
 const Joi=require("joi")
 const app=express()
 
@@ -74,38 +74,38 @@ app.post("/validate-rule", (req, res)=>{
         })
    
     
-      return Joi.attempt(rule, schema)
+      return schema.validate(rule)
     }
 
-    let rulePost=validaterule(rule)
+    const {error} =validaterule(rule)
     
-    if(rulePost){
-        
-        res.status(200).send({
-             "message": "field missions successfully validated.",
-            "status": "success",
-            "data": {
-            "validation": {
-                "error": false,
-                "field": "missions",
-                "field_value": 30,
-                "condition": "gte",
-                "condition_value": 30,
-            }}
-        })
-        
-           
-    } else if(ValidationError) {
-        res.status(400).send({
-             "message": ValidationError.details[0].message,
-            "status": "error",
-            "data": null,
-            rule:Object.assign(rule)
-        })
-        
-    }
-    
+    console.log(error);
+ 
+   if(error) {
+    res.status(400).send({
+    "message": error.details[0].message,
+    "status": "error",
+    "data": null,
+    rule:Object.assign(rule) 
+})
 
-   
+
+} else{
+    res.status(200).send({
+        "message": "field mission successfully validated",
+        "status": "success",
+        "data": {
+        "validation": {
+            "error": false,
+            "field": "missions",
+            "field_value": 30,
+            "condition": "gte",
+            "condition_value": 30,
+        }}
+    })
+
+}
+ 
+
 })
 
